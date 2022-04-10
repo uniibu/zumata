@@ -31,7 +31,7 @@ const getFacts = async () => {
   }
   return result;
 }
-// API route /getFacts, responds with json result
+// API route /getFacts, responds with json result of facts
 router.get(
   '/getFacts',
   async (req, res, next) => {
@@ -40,11 +40,12 @@ router.get(
       // Call handler to response with data
       res.status(200).json(result);
     } catch (err) {
-      console.log("ERROR CATCH")
       next(err);
     }
   }
 )
+
+// API route /addFacts, adds new fact to the DB, returns the added fact as json
 router.post(
   '/addFacts',
   async (req, res, next) => {
@@ -64,6 +65,8 @@ router.post(
     }
   }
 )
+
+// API route /updateFacts, updates a fact
 router.post(
   '/updateFacts',
   async (req, res, next) => {
@@ -71,7 +74,7 @@ router.post(
       return res.status(400).json({ error: 'Empty descripton' });
     }
     try {
-      let result = await db.upsertFacts(req.body);
+      let result = await db.upsertFacts(req.body, true);
       result = await getFacts();
       // Call handler to response with data
       res.status(200).json(result);
@@ -80,6 +83,8 @@ router.post(
     }
   }
 )
+
+// API route /deleteFacts, delete a fact using _id
 router.post(
   '/deleteFacts',
   async (req, res, next) => {

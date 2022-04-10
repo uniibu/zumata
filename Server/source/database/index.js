@@ -36,16 +36,16 @@ dbfunctions.saveFacts = async (fact) => {
         fact.status.feedback || '', fact.status.sentCount || 0]);
     return res;
 }
-dbfunctions.upsertFacts = async (fact) => {
+dbfunctions.upsertFacts = async (fact, updateOnly = false) => {
     let res = false;
     // check if record is found
     const record = await query("SELECT _id FROM facts WHERE _id = $1", [fact._id]);
     // if record not found, add it
-    if (!record) {
+    if (!record && !updateOnly) {
         fact.createdAt = new Date();
         fact.updatedAt = new Date();
         res = await dbfunctions.saveFacts(fact);
-    } else {
+    } else if(record && updateOnly) {
         // update record
         res = await query(
             `UPDATE facts SET 
